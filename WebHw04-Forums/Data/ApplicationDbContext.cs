@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using WebHw04_Forums.Models;
 
 namespace WebHw04_Forums.Data
 {
@@ -12,5 +13,7 @@ namespace WebHw04_Forums.Data
             : base(options)
         {
         }
+
+        public DbSet<Topic> Topics { get; set; }   
     }
 }
