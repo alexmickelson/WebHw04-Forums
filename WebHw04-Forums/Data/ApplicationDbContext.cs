@@ -15,5 +15,9 @@ namespace WebHw04_Forums.Data
         }
 
         public DbSet<Topic> Topics { get; set; }   
+
+        public DbSet<Post> Post { get; set; }
+
+        public DbSet<Comment> Comment { get; set; }
     }
 }
