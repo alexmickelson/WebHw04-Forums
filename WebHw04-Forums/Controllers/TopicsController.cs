@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebHw04_Forums.Data;
 using WebHw04_Forums.Models;
@@ -35,7 +33,9 @@ namespace WebHw04_Forums.Controllers
             }
 
             var topic = await _context.Topics
+                .Include(t => t.Posts)
                 .FirstOrDefaultAsync(m => m.Name == id);
+
             if (topic == null)
             {
                 return NotFound();
@@ -51,7 +51,7 @@ namespace WebHw04_Forums.Controllers
 
         // GET: Topics/Create
         [Authorize]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return View();
         }

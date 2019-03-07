@@ -57,6 +57,7 @@ namespace WebHw04_Forums.Controllers
                 UserId = user.Id,
                 UserName = user.UserName
             };
+            ViewBag.topics = await _context.Topics.Select(t => t.Name).ToListAsync();
             return View(post);
         }
 
@@ -65,7 +66,7 @@ namespace WebHw04_Forums.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,UserId,UserName,Time,Content,Title")] Post post)
+        public async Task<IActionResult> Create([Bind("Id,UserId,UserName,Time,Content,Title,TopicId")] Post post)
         {
             if (ModelState.IsValid)
             {

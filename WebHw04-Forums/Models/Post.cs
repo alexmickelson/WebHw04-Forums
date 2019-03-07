@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,6 +16,7 @@ namespace WebHw04_Forums.Models
         public string Content { get; set; }
         public string Title { get; set; }
 
+        [ForeignKey(nameof(Topic))]
         public string TopicId { get; set; }
     }
 }

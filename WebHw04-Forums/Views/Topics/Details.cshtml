@@ -21,7 +21,8 @@
 
 @foreach(var p in Model.Posts)
 {
-    <div>p.Name</div>
+    <div>Post: </div>
+    <div>@p.Title</div>
 }
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Name">Edit</a> |
