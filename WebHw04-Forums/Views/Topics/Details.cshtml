@@ -18,6 +18,11 @@
         </dd>
     </dl>
 </div>
+
+@foreach(var p in Model.Posts)
+{
+    <div>p.Name</div>
+}
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Name">Edit</a> |
     <a asp-action="Index">Back to List</a>

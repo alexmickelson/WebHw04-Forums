@@ -208,15 +208,15 @@ namespace WebHw04_Forums.Data.Migrations
 
                     b.Property<string>("Title");
 
-                    b.Property<string>("TopicName");
+                    b.Property<string>("TopicId");
 
-                    b.Property<int>("UserId");
+                    b.Property<string>("UserId");
 
                     b.Property<string>("UserName");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TopicName");
+                    b.HasIndex("TopicId");
 
                     b.ToTable("Post");
                 });
@@ -293,7 +293,7 @@ namespace WebHw04_Forums.Data.Migrations
                 {
                     b.HasOne("WebHw04_Forums.Models.Topic")
                         .WithMany("Posts")
-                        .HasForeignKey("TopicName");
+                        .HasForeignKey("TopicId");
                 });
 #pragma warning restore 612, 618
         }

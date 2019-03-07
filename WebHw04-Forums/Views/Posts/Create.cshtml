@@ -1,4 +1,4 @@
-﻿@model WebHw04_Forums.Models.Post
+﻿@model Post
 
 @{
     ViewData["Title"] = "Create";
@@ -13,17 +13,9 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <input asp-for="UserId" class="form-control" />
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input asp-for="Time" class="hidden" value="@DateTime.Now"/>
+                <input asp-for="Time" type="hidden" value="@DateTime.Now"/>
+                <input asp-for="UserId" type="hidden" value="@Model.UserId"/>
+                <input asp-for="UserName" type="hidden" value="@Model.UserName"/>
             </div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label"></label>
@@ -34,6 +26,11 @@
                 <label asp-for="Content" class="control-label"></label>
                 <input asp-for="Content" class="form-control" />
                 <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TopicId" class="control-label"></label>
+                <input asp-for="TopicId" class="form-control" />
+                <span asp-validation-for="TopicId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

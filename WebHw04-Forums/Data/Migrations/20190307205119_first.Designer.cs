@@ -9,7 +9,7 @@ using WebHw04_Forums.Data;
 namespace WebHw04_Forums.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190307173004_first")]
+    [Migration("20190307205119_first")]
     partial class first
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -210,15 +210,15 @@ namespace WebHw04_Forums.Data.Migrations
 
                     b.Property<string>("Title");
 
-                    b.Property<string>("TopicName");
+                    b.Property<string>("TopicId");
 
-                    b.Property<int>("UserId");
+                    b.Property<string>("UserId");
 
                     b.Property<string>("UserName");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TopicName");
+                    b.HasIndex("TopicId");
 
                     b.ToTable("Post");
                 });
@@ -295,7 +295,7 @@ namespace WebHw04_Forums.Data.Migrations
                 {
                     b.HasOne("WebHw04_Forums.Models.Topic")
                         .WithMany("Posts")
-                        .HasForeignKey("TopicName");
+                        .HasForeignKey("TopicId");
                 });
 #pragma warning restore 612, 618
         }

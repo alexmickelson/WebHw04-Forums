@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -40,10 +41,16 @@ namespace WebHw04_Forums.Controllers
                 return NotFound();
             }
 
+            if (topic.Posts == null)
+            {
+                topic.Posts = new List<Post>();
+            }
+
             return View(topic);
         }
 
         // GET: Topics/Create
+        [Authorize]
         public IActionResult Create()
         {
             return View();

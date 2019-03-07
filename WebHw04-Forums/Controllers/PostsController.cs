@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +15,12 @@ namespace WebHw04_Forums.Controllers
     public class PostsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public PostsController(ApplicationDbContext context)
+        public PostsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Posts
@@ -44,9 +48,16 @@ namespace WebHw04_Forums.Controllers
         }
 
         // GET: Posts/Create
-        public IActionResult Create()
+        [Authorize]
+        public async Task<IActionResult> Create()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            var post = new Post()
+            {
+                UserId = user.Id,
+                UserName = user.UserName
+            };
+            return View(post);
         }
 
         // POST: Posts/Create
