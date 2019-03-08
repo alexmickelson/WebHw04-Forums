@@ -1,0 +1,22 @@
+﻿@model int 
+
+
+<div class="result"><div>
+<script>
+    $.get("api/comments/GetComment", function (data) {
+        $(".result").html(data);
+        alert("Load was performed.");
+    });
+    //debugger;
+</script>
+
+
+<div>Comments</div>
+
+@*@foreach(var c in Model)
+{
+    <div>
+        <p>c.UserId</p>
+        <p>c.Content</p>
+    </div>
+}*@

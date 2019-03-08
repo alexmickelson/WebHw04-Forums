@@ -9,8 +9,8 @@ using WebHw04_Forums.Data;
 namespace WebHw04_Forums.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190307230150_first")]
-    partial class first
+    [Migration("20190308160348_mig")]
+    partial class mig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -180,19 +180,17 @@ namespace WebHw04_Forums.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("CommentId");
-
                     b.Property<string>("Content");
 
-                    b.Property<int?>("PostId");
+                    b.Property<int>("ParentId");
+
+                    b.Property<int>("PostId");
 
                     b.Property<DateTime>("Time");
 
-                    b.Property<int>("UserId");
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
 
                     b.HasIndex("PostId");
 
@@ -282,13 +280,10 @@ namespace WebHw04_Forums.Data.Migrations
 
             modelBuilder.Entity("WebHw04_Forums.Models.Comment", b =>
                 {
-                    b.HasOne("WebHw04_Forums.Models.Comment")
-                        .WithMany("ChildComments")
-                        .HasForeignKey("CommentId");
-
                     b.HasOne("WebHw04_Forums.Models.Post")
                         .WithMany("ChildComments")
-                        .HasForeignKey("PostId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("WebHw04_Forums.Models.Post", b =>

@@ -178,19 +178,17 @@ namespace WebHw04_Forums.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("CommentId");
-
                     b.Property<string>("Content");
 
-                    b.Property<int?>("PostId");
+                    b.Property<int>("ParentId");
+
+                    b.Property<int>("PostId");
 
                     b.Property<DateTime>("Time");
 
-                    b.Property<int>("UserId");
+                    b.Property<string>("UserId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CommentId");
 
                     b.HasIndex("PostId");
 
@@ -280,13 +278,10 @@ namespace WebHw04_Forums.Data.Migrations
 
             modelBuilder.Entity("WebHw04_Forums.Models.Comment", b =>
                 {
-                    b.HasOne("WebHw04_Forums.Models.Comment")
-                        .WithMany("ChildComments")
-                        .HasForeignKey("CommentId");
-
                     b.HasOne("WebHw04_Forums.Models.Post")
                         .WithMany("ChildComments")
-                        .HasForeignKey("PostId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("WebHw04_Forums.Models.Post", b =>

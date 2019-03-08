@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebHw04_Forums.Data.Migrations
 {
-    public partial class first : Migration
+    public partial class mig : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -194,27 +194,21 @@ namespace WebHw04_Forums.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    UserId = table.Column<int>(nullable: false),
+                    UserId = table.Column<string>(nullable: true),
                     Time = table.Column<DateTime>(nullable: false),
+                    ParentId = table.Column<int>(nullable: false),
                     Content = table.Column<string>(nullable: true),
-                    CommentId = table.Column<int>(nullable: true),
-                    PostId = table.Column<int>(nullable: true)
+                    PostId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comment", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comment_Comment_CommentId",
-                        column: x => x.CommentId,
-                        principalTable: "Comment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_Comment_Post_PostId",
                         column: x => x.PostId,
                         principalTable: "Post",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -253,11 +247,6 @@ namespace WebHw04_Forums.Data.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Comment_CommentId",
-                table: "Comment",
-                column: "CommentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comment_PostId",
