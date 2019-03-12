@@ -47,7 +47,7 @@
 @await Html.PartialAsync("_comments", Model.Id)
 <br />
 
-@Html.Partial("_newComment", new Comment() { PostId = Model.Id, ParentId = null})
+@Html.Partial("_newComment", new Comment() { PostId = Model.Id, ParentId = null, UserId = ViewBag.userId})
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |

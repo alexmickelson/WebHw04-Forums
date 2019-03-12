@@ -32,6 +32,7 @@ namespace WebHw04_Forums.Controllers
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            var currentUser = await _userManager.GetUserAsync(User);
             if (id == null)
             {
                 return NotFound();
@@ -43,6 +44,7 @@ namespace WebHw04_Forums.Controllers
             {
                 return NotFound();
             }
+            ViewBag.userId = currentUser.Id;
 
             return View(post);
         }

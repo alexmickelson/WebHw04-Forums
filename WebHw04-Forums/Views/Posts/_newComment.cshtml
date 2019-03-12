@@ -1,20 +1,20 @@
-﻿@model WebHw04_Forums.Models.Comment
+﻿@model Comment
 
 <h4>Comment</h4>
 <br />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="PostComment" asp-controller="Comments">
+        <form asp-action="PostComment" asp-controller="Comments" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <input asp-for="UserId" type="hidden" value="@Model.UserId" />
-                <input asp-for="Time" type="hidden" value="@DateTime.Now" />
-                <input asp-for="ParentId" type="hidden" value="@Model.ParentId"  />
-                <input asp-for="PostId" type="hidden" value="@Model.PostId"  />
+                <input asp-for="UserId" value="@Model.UserId" required hidden />
+                <input asp-for="Time" type="datetime"  value='@DateTime.Now' required hidden  />
+                <input asp-for="ParentId" value="@Model.ParentId"  hidden   />
+                <input asp-for="PostId"  value="@Model.PostId"  required hidden  />
             </div>
             <div class="form-group">
                 <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
+                <input asp-for="Content" class="form-control" required />
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
             <div class="form-group">
