@@ -32,19 +32,25 @@ namespace WebHw04_Forums.Controllers
         // GET: Posts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            var currentUser = await _userManager.GetUserAsync(User);
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var post = await _context.Post
                 .FirstOrDefaultAsync(m => m.Id == id);
+
+            var currentUser = await _userManager.GetUserAsync(User);
+
             if (post == null)
             {
                 return NotFound();
             }
-            ViewBag.userId = currentUser.Id;
+
+            if(currentUser == null)
+            {
+                ViewBag.userId = null;
+            } else
+            {
+                ViewBag.userId = currentUser.Id;
+            }
+
+            ViewBag.Comments = await _context.Comment.Where(c => c.PostId == id).ToListAsync();
 
             return View(post);
         }

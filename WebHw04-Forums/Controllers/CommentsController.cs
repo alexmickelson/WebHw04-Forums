@@ -19,6 +19,16 @@ namespace WebHw04_Forums.Controllers
             _context = context;
         }
 
+        public async Task<List<Comment>> getComments()
+        {
+            return await _context.Comment.ToListAsync();
+        }
+
+        public async Task<List<Comment>> getComments(int postId, int? parentComment)
+        {
+            return await _context.Comment.Where(c => c.ParentId == parentComment && c.PostId == postId).ToListAsync();
+        }
+
         // GET: Comments
         public async Task<IActionResult> Index()
         {
@@ -60,7 +70,7 @@ namespace WebHw04_Forums.Controllers
             {
                 _context.Add(comment);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Posts", new { id = comment.PostId });
             }
             return View(comment);
         }

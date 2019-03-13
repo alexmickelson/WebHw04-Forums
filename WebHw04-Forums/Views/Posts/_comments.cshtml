@@ -1,17 +1,12 @@
-﻿@model int 
-
-
-<div class="result"><div>
-<script>
-    $.get("api/comments/GetComment", function (data) {
-        $(".result").html(data);
-        alert("Load was performed.");
-    });
-    //debugger;
-</script>
-
+﻿@model List<Comment> 
 
 <div>Comments</div>
+
+<div class="next">
+    @await Html.PartialAsync("_comments", Model)
+</div>
+
+
 
 @*@foreach(var c in Model)
 {

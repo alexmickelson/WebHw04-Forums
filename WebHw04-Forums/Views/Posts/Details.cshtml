@@ -43,11 +43,18 @@
     </dl>
 </div>
 
-
-@await Html.PartialAsync("_comments", Model.Id)
+@ViewBag.Comments
+<div id="topComment">
+    @await Html.PartialAsync("_comments", new CommentViewModel() { ParentComment = null, PostId = Model.Id })
+</div>
 <br />
 
-@Html.Partial("_newComment", new Comment() { PostId = Model.Id, ParentId = null, UserId = ViewBag.userId})
+@{
+    if (ViewBag.userId != null)
+    {
+        @Html.Partial("_newComment", new Comment() { PostId = Model.Id, ParentId = null, UserId = ViewBag.userId })
+    }
+}
 
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
