@@ -180,7 +180,7 @@ namespace WebHw04_Forums.Data.Migrations
 
                     b.Property<string>("Content");
 
-                    b.Property<int>("ParentId");
+                    b.Property<int?>("ParentId");
 
                     b.Property<int>("PostId");
 

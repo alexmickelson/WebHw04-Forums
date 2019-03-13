@@ -9,8 +9,8 @@ using WebHw04_Forums.Data;
 namespace WebHw04_Forums.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190308160348_mig")]
-    partial class mig
+    [Migration("20190313150601_first")]
+    partial class first
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -182,7 +182,7 @@ namespace WebHw04_Forums.Data.Migrations
 
                     b.Property<string>("Content");
 
-                    b.Property<int>("ParentId");
+                    b.Property<int?>("ParentId");
 
                     b.Property<int>("PostId");
 
