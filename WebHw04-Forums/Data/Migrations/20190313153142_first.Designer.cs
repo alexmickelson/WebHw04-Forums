@@ -9,7 +9,7 @@ using WebHw04_Forums.Data;
 namespace WebHw04_Forums.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190313150601_first")]
+    [Migration("20190313153142_first")]
     partial class first
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
