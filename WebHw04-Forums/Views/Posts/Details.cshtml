@@ -43,9 +43,12 @@
     </dl>
 </div>
 
-@ViewBag.Comments
+@{ 
+    ViewBag.Layer = 0;
+}
+
 <div id="topComment">
-    @await Html.PartialAsync("_comments", new CommentViewModel() { ParentComment = null, PostId = Model.Id })
+    @Html.Partial("_comments", ((List<Comment>)ViewBag.Comments).Where(c => c.ParentId == null).ToList())
 </div>
 <br />
 

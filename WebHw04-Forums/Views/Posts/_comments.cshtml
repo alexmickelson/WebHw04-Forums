@@ -1,17 +1,24 @@
-﻿@model List<Comment> 
+﻿@model List<Comment>
+@{ 
+    string marg = ((int)ViewBag.Layer * 3)+"em";
+    ViewBag.Layer = (int)ViewBag.Layer + 1;
+}
 
-<div>Comments</div>
+<div style="margin-left: 3em;">
+    @foreach (var c in Model)
+    {
+        <div>
+            <p>@c.Content</p>
+            <div class="childrenComments">
+                @Html.Partial("_comments", ((List<Comment>)ViewBag.Comments).Where(com => com.ParentId == c.Id).ToList())
+            </div>
+        </div>
 
-<div class="next">
-    @await Html.PartialAsync("_comments", Model)
+        if (ViewBag.userId != null)
+        {
+            @Html.Partial("_newComment", new Comment() { PostId = c.PostId, ParentId = c.Id, UserId = ViewBag.userId })
+        }
+    }
+
 </div>
 
-
-
-@*@foreach(var c in Model)
-{
-    <div>
-        <p>c.UserId</p>
-        <p>c.Content</p>
-    </div>
-}*@

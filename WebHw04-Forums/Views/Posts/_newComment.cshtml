@@ -1,8 +1,7 @@
 ﻿@model Comment
 
-<h4>Comment</h4>
-<br />
-<div class="row">
+
+<div class="row" style="background-color: lightgrey;">
     <div class="col-md-4">
         <form asp-action="Create" asp-controller="Comments" enctype="multipart/form-data" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
