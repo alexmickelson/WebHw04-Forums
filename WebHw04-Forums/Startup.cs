@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using WebHw04_Forums.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WebHw04_Forums.Models;
 
 namespace WebHw04_Forums
 {
@@ -51,6 +52,14 @@ namespace WebHw04_Forums
                 .AddDefaultUI(UIFramework.Bootstrap4)
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddAuthorization(o =>
+            {
+                o.AddPolicy(MyIdentityData.BlogPolicy_Add, p => p.RequireRole(MyIdentityData.SiteAdminRoleName, MyIdentityData.TopicAdminRoleName, MyIdentityData.ContributorRoleName));
+                o.AddPolicy(MyIdentityData.BlogPolicy_Ban, p => p.RequireRole(MyIdentityData.SiteAdminRoleName, MyIdentityData.TopicAdminRoleName));
+                o.AddPolicy(MyIdentityData.BlogPolicy_Delete, p => p.RequireRole(MyIdentityData.SiteAdminRoleName, MyIdentityData.TopicAdminRoleName));
+            });
+
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

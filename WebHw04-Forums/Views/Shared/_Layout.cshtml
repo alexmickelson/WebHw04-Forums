@@ -45,7 +45,10 @@
         </nav>
     </header>
     <div class="container">
-        <partial name="_CookieConsentPartial" />
+        @render
+    </div>
+
+    <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>

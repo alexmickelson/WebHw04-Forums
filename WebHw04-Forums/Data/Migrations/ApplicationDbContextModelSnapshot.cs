@@ -91,6 +91,10 @@ namespace WebHw04_Forums.Data.Migrations
 
                     b.Property<string>("SecurityStamp");
 
+                    b.Property<string>("TopicName");
+
+                    b.Property<string>("TopicName1");
+
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
@@ -104,6 +108,10 @@ namespace WebHw04_Forums.Data.Migrations
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
                         .HasName("UserNameIndex");
+
+                    b.HasIndex("TopicName");
+
+                    b.HasIndex("TopicName1");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -237,6 +245,17 @@ namespace WebHw04_Forums.Data.Migrations
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.HasOne("WebHw04_Forums.Models.Topic")
+                        .WithMany("Admins")
+                        .HasForeignKey("TopicName");
+
+                    b.HasOne("WebHw04_Forums.Models.Topic")
+                        .WithMany("BannedUsers")
+                        .HasForeignKey("TopicName1");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
