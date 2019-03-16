@@ -16,7 +16,7 @@
               crossorigin="anonymous"
               integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" />
     </environment>
-    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="css/site.css" />
 </head>
 <body>
     <header>
@@ -44,21 +44,15 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        @render
-    </div>
 
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div>
+        @Html.Partial("_sidebar")
+        <main>
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2019 - WebHw04_Forums - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>

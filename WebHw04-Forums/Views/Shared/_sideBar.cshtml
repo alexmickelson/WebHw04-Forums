@@ -1,0 +1,17 @@
+﻿<!-- Sidebar -->
+<div class="bg-light border-right" id="sidebar-wrapper">
+    <div class="sidebar-heading">TOPICS</div>
+    <div class="list-group list-group-flush" id="sidebarItems">
+    </div>
+</div>
+<!-- /#sidebar-wrapper -->
+<script>
+    $(document).ready(function () {
+        $("#sidebarItems").load('@Url.Action("Sidebar","topics")', function (res, status, xhr) {
+
+            if (status == "error") {
+                alert("An error occurred while loading the results.");
+            }
+        });
+    });
+</script>

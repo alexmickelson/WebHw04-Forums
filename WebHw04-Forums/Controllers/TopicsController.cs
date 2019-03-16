@@ -18,6 +18,23 @@ namespace WebHw04_Forums.Controllers
             _context = context;
         }
 
+
+        public async Task<string> Sidebar()
+        {
+            var topics = await _context.Topics.ToListAsync();
+
+            string html = "";
+
+            foreach(var t in topics)
+            {
+
+                html = html + $"<a href='/topics/details?id={t.Name}' class='list-group-item list-group-item-action bg-light'>{t.Name}</a>";
+            }
+
+            return html;
+        }
+
+
         // GET: Topics
         public async Task<IActionResult> Index()
         {

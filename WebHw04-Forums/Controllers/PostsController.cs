@@ -52,7 +52,14 @@ namespace WebHw04_Forums.Controllers
                 ViewBag.userId = currentUser.Id;
             }
 
-            ViewBag.isBanned = (await _context.Topics.FindAsync(post.TopicId)).BannedUsers.Contains(currentUser);
+            var topic = await _context.Topics.FindAsync(post.TopicId);
+            if (topic.BannedUsers == null)
+            {
+                ViewBag.isBanned = false;
+            } else
+            {
+                ViewBag.isBanned = topic.BannedUsers.Contains(currentUser);
+            }
             ViewBag.Comments = await _context.Comment.Where(c => c.PostId == id).ToListAsync();
 
             return View(post);
