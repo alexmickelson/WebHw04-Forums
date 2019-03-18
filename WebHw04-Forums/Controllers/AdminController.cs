@@ -68,7 +68,7 @@ namespace WebHw04_Forums.Controllers
         [Authorize(Policy = MyIdentityData.BlogPolicy_Admin)]
         public async Task<IActionResult> Create(string id, string roleName)
         {
-            var role = await _roleManager.FindByIdAsync(roleName);
+            var role = await _roleManager.FindByNameAsync(roleName);
             var newAdmin = await _userManager.FindByIdAsync(id);
             //var newAdmin = _userManager.Users.Where(u => u.Id == id).First();
 

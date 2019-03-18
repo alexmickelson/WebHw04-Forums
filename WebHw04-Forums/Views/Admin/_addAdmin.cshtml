@@ -10,7 +10,7 @@
     <form asp-action="Create" asp-controller="Admin" enctype="multipart/form-data" method="post">
 
         <input id="id" name="id" value="@Model" required hidden />
-        <select id="roleId" name="roleId" required >
+        <select id="roleName" name="roleName" required >
             @foreach(var r in ViewBag.Roles)
             {
                 <option value="@r">@r</option>
