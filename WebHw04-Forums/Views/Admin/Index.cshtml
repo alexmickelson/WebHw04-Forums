@@ -1,0 +1,32 @@
+﻿
+@inject IAuthorizationService Authorization
+@{
+    var canAdd = (await Authorization.AuthorizeAsync(User, MyIdentityData.BlogPolicy_Add)).Succeeded;
+    var canBan = (await Authorization.AuthorizeAsync(User, MyIdentityData.BlogPolicy_Ban)).Succeeded;
+    var canDelete = (await Authorization.AuthorizeAsync(User, MyIdentityData.BlogPolicy_Delete)).Succeeded;
+    var isAdmin = (await Authorization.AuthorizeAsync(User, MyIdentityData.BlogPolicy_Admin)).Succeeded;
+}
+
+
+@if (@isAdmin)
+{
+    <h1>You Are an Admin</h1>
+}
+
+
+<div>
+    <h2>There are @ViewBag.TopicAmount Topics</h2>
+</div>
+<div>
+    <h2>There are @ViewBag.PostAmount Posts</h2>
+</div>
+<div>
+    <h2>There are @ViewBag.CommentAmount Comments</h2>
+</div>
+<div>
+    <h2>There are @ViewBag.UserAmount Users</h2>
+</div>
+
+<div>
+    <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Create">Add an Admin</a>
+</div>

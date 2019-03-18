@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebHw04_Forums.Data;
@@ -12,10 +13,17 @@ namespace WebHw04_Forums.Controllers
     public class TopicsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public static List<string> TopicPolicies = new List<string>();
 
-        public TopicsController(ApplicationDbContext context)
+        public TopicsController(ApplicationDbContext context,
+                                UserManager<IdentityUser> userManager,
+                                RoleManager<IdentityRole> roleManager)
         {
             _context = context;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
 
@@ -73,6 +81,7 @@ namespace WebHw04_Forums.Controllers
             return View();
         }
 
+
         // POST: Topics/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -84,6 +93,20 @@ namespace WebHw04_Forums.Controllers
             {
                 _context.Add(topic);
                 await _context.SaveChangesAsync();
+
+                var roleName = MyIdentityData.TopicAdminRoleName + topic.Name;
+                if (!TopicPolicies.Contains(roleName))
+                {
+                    TopicPolicies.Add(roleName);
+                    var role = await _roleManager.FindByNameAsync(roleName);
+                    if (role == null)
+                    {
+                        role = new IdentityRole(roleName);
+                        await _roleManager.CreateAsync(role);
+                    }
+                }
+
+
                 return RedirectToAction(nameof(Index));
             }
             return View(topic);

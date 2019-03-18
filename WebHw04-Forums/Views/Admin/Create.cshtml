@@ -1,0 +1,21 @@
+﻿@model List<UserViewModel>
+@inject IAuthorizationService Authorization
+
+<h1>Create</h1>
+
+
+@foreach (var user in Model)
+{
+<div class="User">
+    <div>@user.UserName</div>
+    <div>@user.UserId</div>
+    <ul class="rolesList">
+        @foreach(var r in user.Roles)
+        {
+            <li>@r</li>
+        }
+    </ul>
+    <partial name="_addAdmin" for="@user.UserId" />
+</div>
+}
+

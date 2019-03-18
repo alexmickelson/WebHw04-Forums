@@ -58,6 +58,7 @@ namespace WebHw04_Forums
                 o.AddPolicy(MyIdentityData.BlogPolicy_Add, p => p.RequireRole(MyIdentityData.SiteAdminRoleName, MyIdentityData.TopicAdminRoleName, MyIdentityData.ContributorRoleName));
                 o.AddPolicy(MyIdentityData.BlogPolicy_Ban, p => p.RequireRole(MyIdentityData.SiteAdminRoleName, MyIdentityData.TopicAdminRoleName));
                 o.AddPolicy(MyIdentityData.BlogPolicy_Delete, p => p.RequireRole(MyIdentityData.SiteAdminRoleName, MyIdentityData.TopicAdminRoleName));
+                o.AddPolicy(MyIdentityData.BlogPolicy_Admin, p => p.RequireRole(MyIdentityData.SiteAdminRoleName));
             });
 
 
@@ -65,7 +66,10 @@ namespace WebHw04_Forums
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app,
+                            IHostingEnvironment env,
+                            UserManager<IdentityUser> userManager,
+                            RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -84,6 +88,7 @@ namespace WebHw04_Forums
             app.UseCookiePolicy();
 
             app.UseAuthentication();
+            MyIdentityData.SeedData(userManager, roleManager);
 
             app.UseMvc(routes =>
             {

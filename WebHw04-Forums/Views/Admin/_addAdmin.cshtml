@@ -1,0 +1,21 @@
+﻿@model string
+
+<div>
+    <div>
+        @foreach(var r in ViewBag.Roles)
+        {
+            @r
+        }
+    </div>
+    <form asp-action="Create" asp-controller="Admin" enctype="multipart/form-data" method="post">
+
+        <input id="id" name="id" value="@Model" required hidden />
+        <select id="roleId" name="roleId" required >
+            @foreach(var r in ViewBag.Roles)
+            {
+                <option value="@r">@r</option>
+            }
+        </select>
+        <input type="submit" value="Add as Admin" class="btn" />
+    </form>
+</div>

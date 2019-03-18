@@ -58,9 +58,8 @@ body {
 main {
     margin-left: 10em;
 }
-#sidebar {
 
-}
+
 /*!
  * Start Bootstrap - Simple Sidebar (https://startbootstrap.com/template-overviews/simple-sidebar)
  * Copyright 2013-2019 Start Bootstrap
@@ -69,7 +68,6 @@ main {
 body {
     overflow-x: hidden;
 }
-
 #sidebar-wrapper {
     min-height: 100vh;
     margin-left: -10em;
@@ -77,7 +75,7 @@ body {
     -moz-transition: margin .25s ease-out;
     -o-transition: margin .25s ease-out;
     transition: margin .25s ease-out;
-    background-color: lightblue;
+    background-color: lightgray;
     position: absolute;
 }
 
@@ -108,4 +106,12 @@ body {
     #wrapper.toggled #sidebar-wrapper {
         margin-left: -10em;
     }
+}
+
+.User {
+    display: flex;
+    background-color: grey;
+}
+.User div {
+    padding: 2em;
 }

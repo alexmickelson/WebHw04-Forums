@@ -60,6 +60,8 @@ namespace WebHw04_Forums.Controllers
             {
                 ViewBag.isBanned = topic.BannedUsers.Contains(currentUser);
             }
+
+
             ViewBag.Comments = await _context.Comment.Where(c => c.PostId == id).ToListAsync();
 
             return View(post);
