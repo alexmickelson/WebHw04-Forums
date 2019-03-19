@@ -20,6 +20,11 @@ namespace WebHw04_Forums.Controllers
             return View();
         }
 
+        public IActionResult Unauthorized()
+        {
+            return View();
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

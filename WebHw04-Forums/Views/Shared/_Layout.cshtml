@@ -42,7 +42,7 @@
 
                         @inject IAuthorizationService Authorization
                         @{
-                            if ((await Authorization.AuthorizeAsync(User, MyIdentityData.BlogPolicy_Admin)).Succeeded)
+                            if ((await Authorization.AuthorizeAsync(User, MyIdentityData.Policy_Admin)).Succeeded)
                             {
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Admin" asp-action="Index">Admin Resources</a>

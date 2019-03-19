@@ -1,6 +1,9 @@
 ﻿@model List<Comment>
-@{ 
-    string marg = ((int)ViewBag.Layer * 3)+"em";
+@using WebHw04_Forums.Data;
+@inject IAuthorizationService _authorization
+@inject ApplicationDbContext _context;
+@{
+    string marg = ((int)ViewBag.Layer * 3) + "em";
     ViewBag.Layer = (int)ViewBag.Layer + 1;
 }
 
@@ -14,7 +17,9 @@
             </div>
         </div>
 
-        if (ViewBag.userId != null)
+        if (ViewBag.userId != null &&
+                (await _authorization.AuthorizeAsync(User, MyIdentityData.Policy_NotBanned +
+                        _context.Topics.Where(t => t.Posts.Where(p => p.Id == c.PostId).Any()).First().Name)).Succeeded)
         {
             @Html.Partial("_newComment", new Comment() { PostId = c.PostId, ParentId = c.Id, UserId = ViewBag.userId })
         }

@@ -27,11 +27,10 @@ namespace WebHw04_Forums.Controllers
             _userManager = userManager;
         }
 
-        [Authorize(Policy = MyIdentityData.BlogPolicy_Admin)]
+        [Authorize(Policy = MyIdentityData.Policy_Admin)]
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
-            var x = await _userManager.GetRolesAsync(user);
 
             ViewBag.TopicAmount = await _context.Topics.CountAsync();
             ViewBag.PostAmount = await _context.Post.CountAsync();
@@ -43,8 +42,8 @@ namespace WebHw04_Forums.Controllers
             return View();
         }
 
-        [Authorize(Policy = MyIdentityData.BlogPolicy_Admin)]
-        public async Task<IActionResult> Create()
+        [Authorize(Policy = MyIdentityData.Policy_Admin)]
+        public async Task<IActionResult> Users()
         {
             List<UserViewModel> models = new List<UserViewModel>();
             var users = await _userManager.Users.ToListAsync();
@@ -65,21 +64,21 @@ namespace WebHw04_Forums.Controllers
 
 
         [HttpPost]
-        [Authorize(Policy = MyIdentityData.BlogPolicy_Admin)]
-        public async Task<IActionResult> Create(string id, string roleName)
+        [Authorize(Policy = MyIdentityData.Policy_Admin)]
+        public async Task<IActionResult> Users(string id, string roleName)
         {
             var role = await _roleManager.FindByNameAsync(roleName);
-            var newAdmin = await _userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
             //var newAdmin = _userManager.Users.Where(u => u.Id == id).First();
 
-            if (newAdmin != null)
+            if (user != null)
             {
-                await _userManager.AddToRoleAsync(newAdmin, role.Name);
+                await _userManager.AddToRoleAsync(user, role.Name);
 
-                return RedirectToAction(nameof(Create));
+                return RedirectToAction(nameof(Users));
             }
             return RedirectToAction(nameof(Index));
         }
-
+        
     }
 }

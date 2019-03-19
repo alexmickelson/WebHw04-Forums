@@ -20,15 +20,10 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
+        <tr class="shadow" onclick="location.href = '/topics/details/@item.Name';" >
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
                 @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Name">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Name">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Name">Delete</a>
             </td>
         </tr>
 }

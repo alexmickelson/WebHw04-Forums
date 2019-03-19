@@ -1,4 +1,7 @@
 ﻿@model WebHw04_Forums.Models.Post
+@using WebHw04_Forums.Data;
+@inject IAuthorizationService _authorization
+@inject ApplicationDbContext _context;
 
 @{
     ViewData["Title"] = "Details";
@@ -11,22 +14,16 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.UserId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.UserId)
-        </dd>
-        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.UserName)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.UserName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Time)
+            @Html.DisplayNameFor(model => model.Title)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Time)
+            @Html.DisplayFor(model => model.Title)
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Content)
@@ -35,31 +32,34 @@
             @Html.DisplayFor(model => model.Content)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.Time)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
+            @Html.DisplayFor(model => model.Time)
         </dd>
     </dl>
 </div>
 
-@{ 
+@{
     ViewBag.Layer = 0;
 }
-
+<div><strong>Comments: </strong></div>
 <div id="topComment">
     @Html.Partial("_comments", ((List<Comment>)ViewBag.Comments).Where(c => c.ParentId == null).ToList())
 </div>
 <br />
 
 @{
-    if (ViewBag.userId != null)
+
+    if (ViewBag.userId != null &&
+            (await _authorization.AuthorizeAsync(User, MyIdentityData.Policy_NotBanned +
+                    _context.Topics.Where(t => t.Posts.Contains(Model)).First().Name)).Succeeded)
     {
-        @Html.Partial("_newComment", new Comment() { PostId = Model.Id, ParentId = null, UserId = ViewBag.userId })
+        @Html.Partial("_newComment", new Comment() { PostId = Model.Id, ParentId = null, UserId = ViewBag.userId });
     }
 }
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,13 @@ namespace WebHw04_Forums.Controllers
     {
 
         private readonly ApplicationDbContext _context;
+        private readonly IAuthorizationService _authorization;
 
-        public CommentsController(ApplicationDbContext context)
+        public CommentsController(ApplicationDbContext context,
+                                IAuthorizationService authorization)
         {
             _context = context;
+            _authorization = authorization;
         }
         public async Task<List<Comment>> getComments()
         {
@@ -32,13 +36,23 @@ namespace WebHw04_Forums.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,UserId,Time,ParentId,Content,PostId")] Comment comment)
         {
-            if (ModelState.IsValid)
+            var topicname = _context.Topics.Where(t => t.Posts.Where(p => p.Id == comment.PostId).Any()).First().Name;
+            if ((await _authorization.AuthorizeAsync(User, MyIdentityData.Policy_NotBanned +
+                        _context.Topics.Where(t => t.Posts.Where(p => p.Id == comment.PostId).Any()).First().Name)).Succeeded)
             {
-                _context.Add(comment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Details", "Posts", new { id = comment.PostId });
+                if (ModelState.IsValid)
+                {
+                    _context.Add(comment);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Details", "Posts", new { id = comment.PostId });
+                }
+                return View(comment);
+
             }
-            return View(comment);
+            else
+            {
+                return Redirect("/home/unauthorized");
+            }
         }
     }
 }

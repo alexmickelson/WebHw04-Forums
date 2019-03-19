@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using WebHw04_Forums.Data;
 using WebHw04_Forums.Models;
+using WebHw04_Forums.Services;
 
 namespace WebHw04_Forums.Controllers
 {
@@ -15,15 +18,20 @@ namespace WebHw04_Forums.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public static List<string> TopicPolicies = new List<string>();
+        private readonly IAuthorizationPolicyProvider _policyProvider;
+        private readonly IAuthorizationService _authorization;
 
         public TopicsController(ApplicationDbContext context,
                                 UserManager<IdentityUser> userManager,
-                                RoleManager<IdentityRole> roleManager)
+                                RoleManager<IdentityRole> roleManager,
+                                IAuthorizationPolicyProvider policyProvider,
+                                IAuthorizationService authorization)
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _policyProvider = policyProvider;
+            _authorization = authorization;
         }
 
 
@@ -46,12 +54,18 @@ namespace WebHw04_Forums.Controllers
         // GET: Topics
         public async Task<IActionResult> Index()
         {
+
             return View(await _context.Topics.ToListAsync());
         }
 
         // GET: Topics/Details/5
         public async Task<IActionResult> Details(string id)
         {
+
+            var p = await _policyProvider.GetPolicyAsync(MyIdentityData.Policy_NotBanned + "afds");
+            var a = p.Requirements;
+            
+            
             if (id == null)
             {
                 return NotFound();
@@ -75,7 +89,6 @@ namespace WebHw04_Forums.Controllers
         }
 
         // GET: Topics/Create
-        [Authorize]
         public async Task<IActionResult> Create()
         {
             return View();
@@ -89,108 +102,40 @@ namespace WebHw04_Forums.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Name,Description")] Topic topic)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && _context.Topics.Find(topic.Name) == null )
             {
+                
                 _context.Add(topic);
                 await _context.SaveChangesAsync();
 
                 var roleName = MyIdentityData.TopicAdminRoleName + topic.Name;
-                if (!TopicPolicies.Contains(roleName))
+                var role = await _roleManager.FindByNameAsync(roleName);
+                if (role == null)
                 {
-                    TopicPolicies.Add(roleName);
-                    var role = await _roleManager.FindByNameAsync(roleName);
-                    if (role == null)
-                    {
-                        role = new IdentityRole(roleName);
-                        await _roleManager.CreateAsync(role);
-                    }
+                    role = new IdentityRole(roleName);
+                    await _roleManager.CreateAsync(role);
+                    await _policyProvider.GetPolicyAsync(MyIdentityData.Policy_TopicAdmin+topic.Name);
                 }
+                
+
+                roleName = MyIdentityData.BannedRoleName + topic.Name;
+                role = await _roleManager.FindByNameAsync(roleName);
+                if (role == null)
+                {
+                    role = new IdentityRole(roleName);
+                    await _roleManager.CreateAsync(role);
+                    await _policyProvider.GetPolicyAsync(MyIdentityData.Policy_NotBanned + topic.Name);
+                }
+                
 
 
                 return RedirectToAction(nameof(Index));
             }
-            return View(topic);
-        }
 
-        // GET: Topics/Edit/5
-        public async Task<IActionResult> Edit(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var topic = await _context.Topics.FindAsync(id);
-            if (topic == null)
-            {
-                return NotFound();
-            }
-            return View(topic);
-        }
-
-        // POST: Topics/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Name,Description")] Topic topic)
-        {
-            if (id != topic.Name)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(topic);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TopicExists(topic.Name))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(topic);
-        }
-
-        // GET: Topics/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var topic = await _context.Topics
-                .FirstOrDefaultAsync(m => m.Name == id);
-            if (topic == null)
-            {
-                return NotFound();
-            }
 
             return View(topic);
         }
 
-        // POST: Topics/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
-        {
-            var topic = await _context.Topics.FindAsync(id);
-            _context.Topics.Remove(topic);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
         private bool TopicExists(string id)
         {

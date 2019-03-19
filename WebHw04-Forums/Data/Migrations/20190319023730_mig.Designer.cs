@@ -9,8 +9,8 @@ using WebHw04_Forums.Data;
 namespace WebHw04_Forums.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190315220555_first")]
-    partial class first
+    [Migration("20190319023730_mig")]
+    partial class mig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

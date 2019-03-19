@@ -9,18 +9,29 @@ namespace WebHw04_Forums
     public class MyIdentityData
     {
         public const string SiteAdminRoleName = "SiteAdmin";
-        public const string TopicAdminRoleName = "TopicAdminof";
+        public const string TopicAdminRoleName = "TopicAdmin: ";
+        public const string BannedRoleName = "BannedFrom: ";
         public const string ContributorRoleName = "Contributor";
 
-        public const string BlogPolicy_Add = "CanAddBlogPostsComments";
-        public const string BlogPolicy_Delete = "CanDeleteBlogPosts";
-        public const string BlogPolicy_Ban = "CanBanUsers";
-        public const string BlogPolicy_Admin = "IsSiteAdmin";
+        public const string Policy_Add = "CanAddBlogPostsComments";
+        public const string Policy_Delete = "CanDeleteBlogPosts";
+        public const string Policy_NotBanned = "NotBannedFrom: ";
+        public const string Policy_TopicAdmin = "TopicAdminFor: ";
+        public const string Policy_Admin = "IsSiteAdmin";
 
-
-        internal static void SeedData(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public static string getBannedRole(string topic)
         {
-            foreach (var roleName in new[] { SiteAdminRoleName, TopicAdminRoleName, ContributorRoleName })
+            return BannedRoleName + topic;
+        }
+        public static string getAdminRole(string topic)
+        {
+            return TopicAdminRoleName + topic;
+        }
+
+        internal static void SeedData(UserManager<IdentityUser> userManager,
+                                        RoleManager<IdentityRole> roleManager)
+        {
+            foreach (var roleName in new[] { SiteAdminRoleName, ContributorRoleName })
             {
                 var role = roleManager.FindByNameAsync(roleName).Result;
                 if (role == null)

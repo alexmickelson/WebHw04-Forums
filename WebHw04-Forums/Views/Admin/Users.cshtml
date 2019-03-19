@@ -1,5 +1,4 @@
 ﻿@model List<UserViewModel>
-@inject IAuthorizationService Authorization
 
 <h1>Create</h1>
 
@@ -15,7 +14,7 @@
             <li>@r</li>
         }
     </ul>
-    <partial name="_addAdmin" for="@user.UserId" />
+    <partial name="_userAction" for="@user.UserId" />
 </div>
 }
 

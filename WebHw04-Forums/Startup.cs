@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebHw04_Forums.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WebHw04_Forums.Models;
+using Microsoft.AspNetCore.Authorization;
+using WebHw04_Forums.Services;
 
 namespace WebHw04_Forums
 {
@@ -36,6 +32,8 @@ namespace WebHw04_Forums
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            //services.AddScoped<IServiceCollection, service>();
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
@@ -53,15 +51,18 @@ namespace WebHw04_Forums
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddAuthorization(o =>
-            {
-                o.AddPolicy(MyIdentityData.BlogPolicy_Add, p => p.RequireRole(MyIdentityData.SiteAdminRoleName, MyIdentityData.TopicAdminRoleName, MyIdentityData.ContributorRoleName));
-                o.AddPolicy(MyIdentityData.BlogPolicy_Ban, p => p.RequireRole(MyIdentityData.SiteAdminRoleName, MyIdentityData.TopicAdminRoleName));
-                o.AddPolicy(MyIdentityData.BlogPolicy_Delete, p => p.RequireRole(MyIdentityData.SiteAdminRoleName, MyIdentityData.TopicAdminRoleName));
-                o.AddPolicy(MyIdentityData.BlogPolicy_Admin, p => p.RequireRole(MyIdentityData.SiteAdminRoleName));
-            });
+            //services.AddAuthorization(o =>
+            //{
+            //    o.AddPolicy(MyIdentityData.Policy_Add, p => p.RequireRole(MyIdentityData.SiteAdminRoleName, MyIdentityData.TopicAdminRoleName, MyIdentityData.ContributorRoleName));
+            //    o.AddPolicy(MyIdentityData.Policy_Delete, p => p.RequireRole(MyIdentityData.SiteAdminRoleName, MyIdentityData.TopicAdminRoleName));
+            //    o.AddPolicy(MyIdentityData.Policy_Admin, p => p.RequireRole(MyIdentityData.SiteAdminRoleName));
+            //    o.AddPolicy(MyIdentityData.Policy_NotBanned, p => p.AddRequirements(new NotBannedRequirement()));
+            //});
 
+            services.AddTransient<IAuthorizationPolicyProvider, MyPolicyProvider>();
+            services.AddTransient<IAuthorizationHandler, NotBannedHandler>();
 
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

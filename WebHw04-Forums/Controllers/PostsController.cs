@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebHw04_Forums.Data;
 using WebHw04_Forums.Models;
@@ -16,11 +13,15 @@ namespace WebHw04_Forums.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IAuthorizationService _authorization;
 
-        public PostsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
+        public PostsController(ApplicationDbContext context,
+                                UserManager<IdentityUser> userManager,
+                                IAuthorizationService authorization)
         {
             _context = context;
             _userManager = userManager;
+            _authorization = authorization;
         }
 
         // GET: Posts
@@ -71,6 +72,8 @@ namespace WebHw04_Forums.Controllers
         [Authorize]
         public async Task<IActionResult> Create()
         {
+
+
             var user = await _userManager.GetUserAsync(User);
             var post = new Post()
             {
@@ -88,13 +91,19 @@ namespace WebHw04_Forums.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,UserId,UserName,Time,Content,Title,TopicId")] Post post)
         {
-            if (ModelState.IsValid)
+            if ((await _authorization.AuthorizeAsync(User, MyIdentityData.Policy_NotBanned + post.TopicId)).Succeeded)
             {
-                _context.Add(post);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                    {
+                        _context.Add(post);
+                        await _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                    return View(post);
+            } else 
+            {
+                return Redirect("/home/Unauthorized");
             }
-            return View(post);
         }
 
         // GET: Posts/Edit/5
@@ -105,12 +114,20 @@ namespace WebHw04_Forums.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Post.FindAsync(id);
-            if (post == null)
+            if ((await _authorization.AuthorizeAsync(User, MyIdentityData.Policy_NotBanned +
+                _context.Topics.Where(t => t.Posts.Where(p => p.Id == id).Any()).First().Name)).Succeeded)
             {
-                return NotFound();
+                var post = await _context.Post.FindAsync(id);
+                if (post == null)
+                {
+                    return NotFound();
+                }
+                return View(post);
             }
-            return View(post);
+            else
+            {
+                return Redirect("/home/Unauthorized");
+            }
         }
 
         // POST: Posts/Edit/5
@@ -125,27 +142,35 @@ namespace WebHw04_Forums.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if ((await _authorization.AuthorizeAsync(User, MyIdentityData.Policy_NotBanned +
+                _context.Topics.Where(t => t.Posts.Where(p => p.Id == id).Any()).First().Name)).Succeeded)
             {
-                try
+                    if (ModelState.IsValid)
                 {
-                    _context.Update(post);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PostExists(post.Id))
+                    try
                     {
-                        return NotFound();
+                        _context.Update(post);
+                        await _context.SaveChangesAsync();
                     }
-                    else
+                    catch (DbUpdateConcurrencyException)
                     {
-                        throw;
+                        if (!PostExists(post.Id))
+                        {
+                            return NotFound();
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
+                    return RedirectToAction(nameof(Index));
                 }
-                return RedirectToAction(nameof(Index));
+                return View(post);
             }
-            return View(post);
+            else
+            {
+                return Redirect("/home/Unauthorized");
+            }
         }
 
         // GET: Posts/Delete/5
@@ -157,14 +182,23 @@ namespace WebHw04_Forums.Controllers
                 return NotFound();
             }
 
-            var post = await _context.Post
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (post == null)
-            {
-                return NotFound();
-            }
 
-            return View(post);
+            if ((await _authorization.AuthorizeAsync(User, MyIdentityData.Policy_NotBanned +
+                _context.Topics.Where(t => t.Posts.Where(p => p.Id == id).Any()).First().Name)).Succeeded)
+            {
+                    var post = await _context.Post
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (post == null)
+                {
+                    return NotFound();
+                }
+
+                return View(post);
+            }
+            else
+            {
+                return Redirect("/home/Unauthorized");
+            }
         }
 
         // POST: Posts/Delete/5
@@ -172,10 +206,19 @@ namespace WebHw04_Forums.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var post = await _context.Post.FindAsync(id);
-            _context.Post.Remove(post);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            if ((await _authorization.AuthorizeAsync(User, MyIdentityData.Policy_NotBanned +
+                _context.Topics.Where(t => t.Posts.Where(p => p.Id == id).Any()).First().Name)).Succeeded)
+            {
+                    var post = await _context.Post.FindAsync(id);
+                _context.Post.Remove(post);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return Redirect("/home/Unauthorized");
+            }
         }
 
         private bool PostExists(int id)

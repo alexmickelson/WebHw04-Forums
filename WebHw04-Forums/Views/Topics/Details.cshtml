@@ -19,10 +19,10 @@
     </dl>
 </div>
 
-<div>Post: </div>
+<div>POSTS IN THIS TOPIC: </div>
 @foreach (var p in Model.Posts)
 {
-    <div>@p.Title</div>
+    <div class="btn btn-dark"  onclick="location.href = '/posts/details/@p.Id';">@p.Title</div>
 }
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Name">Edit</a> |
